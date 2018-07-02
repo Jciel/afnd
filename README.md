@@ -17,7 +17,7 @@ Enter in the root project directory and run
 lein run
 ```
 
-###### Input (purely explanatory examples :P)
+##### Input (purely explanatory examples :P)
 The alphabetof automaton. Ex.  
 ``a b`` 
 
@@ -36,3 +36,6 @@ S -> aA aB bB
 A -> aA bB
 B -> bB
 ```
+
+The input string. Ex.  
+``aaba``
