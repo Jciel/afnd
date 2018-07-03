@@ -25,12 +25,12 @@
 (defn read-initial-state
   []
   (println "Digite o estado inicial")
-  (keyword (read-line)))
+  (keyword (first (read-data-afnd))))
 
 (defn read-final-states
   []
   (println "Digite os estados finais")
-  (read-data-afnd))
+  (mapv #(keyword %) (read-data-afnd)))
 
 (defn read-string-chain
   []
@@ -46,7 +46,7 @@
 
 (defn read-rules-grammar
   [rules]
-  (println "Defina as funções de transição")
+  (println "Digite as funções de transição")
   (loop [rules rules]
     (let [rule (read-line)]
       (if-not (empty? rule)
@@ -82,22 +82,38 @@
    :rules-grammar (read-rules-grammar [])
    :string (read-string-chain)})
 
+(defn recognized?
+  [result]
+  (let [r (first result)]
+    (if (true? r)
+      r
+      (if (vector? r)
+        (recur r)))))
+
+
 (defn identifier-chain
-  [chain afnd state]
+  [chain afnd state final-states]
   (let [label (first chain)
         fn-transactions (state afnd)
-        states (filterv #(not (nil? %)) (map #(keyword ((keyword label) %)) fn-transactions))]
+        states (filterv #(not (nil? %)) (map #(-> ((keyword label) %)
+                                                  keyword) fn-transactions))]
     (if (empty? states)
-      (println "Label nao encontrada")
-      (map (fn [state]
-               (if (empty? (rest chain))
-                 (println "String reconhecida")
-                 (identifier-chain (rest chain) afnd state))) states))))
+      false
+      (mapv (fn [state]
+            (if (and (empty? (rest chain)) (.contains final-states state))
+              ;(println "\n\nString reconhecida")
+              true
+              (identifier-chain (rest chain) afnd state final-states))) states))))
 
 ;   {:S [{:a A} {:a B} {:b B}], :A [{:a A} {:b B}], :B [{:a B}]}
+;  (identifier-chain ["a" "a" "b" "b" "b"] {:S [{:a "A"}, {:a "B"} {:b "B"}], :A [{:a "A"}, {:b "B"}], :B [{:b "B"}]} :S)
 
 (defn main
   []
   (let [automaton-data (read-automaton-data)
-        afnd (create-afnd {} (:rules-grammar automaton-data))]
-    (println (identifier-chain (:string automaton-data) afnd (:initial-state automaton-data)))))
+        afnd (create-afnd {} (:rules-grammar automaton-data))
+        string (:string automaton-data)
+        initial-state (:initial-state automaton-data)
+        final-states (:final-states automaton-data)
+        res (recognized? (identifier-chain string afnd initial-state final-states))]
+    (println res)))
