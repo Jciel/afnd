@@ -1,7 +1,6 @@
 (ns afnd.core
   (:require [clojure.string :as s]))
 
-
 (defn filterv-not-empty
   [data]
   (filterv (fn [x]
@@ -26,7 +25,7 @@
 (defn read-initial-state
   []
   (println "Digite o estado inicial")
-  (keyword (read-data-afnd)))
+  (keyword (read-line)))
 
 (defn read-final-states
   []
@@ -35,6 +34,7 @@
 
 (defn read-string-chain
   []
+  (println "Digite a string")
   (let [chain (read-line)]
     (s/split chain #"")))
 
@@ -54,18 +54,6 @@
           (let [real-rule (mount-rule rule)]
             (recur (conj rules real-rule))))
         rules))))
-
-;(defn define-function-transition
-;  [fn-transition]
-;  (let [fn-part (s/split fn-transition #"")]
-;    (conj {} {(keyword (first fn-part)) (last fn-part)})))
-;
-;(defn mount-part-afnd
-;  [rule]
-;  (let [state (first rule)
-;        fn-transictions (into {} (map define-function-transition (rest rule)))]
-;    {(keyword state) fn-transictions}))
-
 
 (defn define-function-transition
   [fn-transition]
@@ -89,32 +77,27 @@
   []
   {:alphabet (read-alphabet)
    :states (read-states)
-   :initial_states (read-initial-state)
+   :initial-state (read-initial-state)
    :final-states (read-final-states)
    :rules-grammar (read-rules-grammar [])
    :string (read-string-chain)})
 
-
 (defn identifier-chain
   [chain afnd state]
   (let [label (first chain)
-        fn-transaction (state afnd)
-        state (filterv #(not (nil? %)) (map #(keyword ((keyword label) %)) fn-transaction))]
-    (println chain)
-    (println label)
-    (println state)
-    (if (empty? state)
+        fn-transactions (state afnd)
+        states (filterv #(not (nil? %)) (map #(keyword ((keyword label) %)) fn-transactions))]
+    (if (empty? states)
       (println "Label nao encontrada")
-      (map (fn [x]
-             (identifier-chain (rest chain) afnd x)) state))
-    ))
+      (map (fn [state]
+               (if (empty? (rest chain))
+                 (println "String reconhecida")
+                 (identifier-chain (rest chain) afnd state))) states))))
 
 ;   {:S [{:a A} {:a B} {:b B}], :A [{:a A} {:b B}], :B [{:a B}]}
-
 
 (defn main
   []
   (let [automaton-data (read-automaton-data)
         afnd (create-afnd {} (:rules-grammar automaton-data))]
-
-    (println afnd)))
+    (println (identifier-chain (:string automaton-data) afnd (:initial-state automaton-data)))))
