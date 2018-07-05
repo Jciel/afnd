@@ -208,7 +208,7 @@ for aceita não retorna nada. ``linha 89``
 Primeiramente recupera o primeiro caracter da string e tranforma em um keyword, 
 depois recupera os estados destinos a partir do estado atual, e após recupera os 
 estados destinos a apartir do estado atual pelo label atual, verifica se tem algum 
-caminho de destino, caso tenha, verifica se é o fim da string e se esta em um estado 
+caminho de destino, caso tenha, verifica se é o fim da string e se está em um estado 
 final, caso isso ocorra, mostra a mesnsagem de "String aceira", senão faz o mesmo 
 precesso recursivamente percorrendo o grafo até o fim da string, se a string não for 
 aceita, não retorna nada
