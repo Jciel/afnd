@@ -121,7 +121,7 @@ e retorna um vetor com cada caracter sendo um item do vetor. ``linha 35``
 ```
 
 A função ``mount-rule`` faz um parse de cada regra das funções de transição 
-e retorna um vetor, por exemplo a regra ``S -> aA|bA`` retorna ``["S" "aA" "bA"]``. ``linha 41``
+e retorna um vetor, por exemplo a regra ``S -> aA|bA`` retorna ``["S" "aA" "bA"]``. ``linha 41``  
 ```clojure
 (defn mount-rule
   [rule]
@@ -132,7 +132,7 @@ e retorna um vetor, por exemplo a regra ``S -> aA|bA`` retorna ``["S" "aA" "bA"]
 
 A função ``read-rules-grammar`` faz a leitura das funções de transição, 
 usando a função ``mount-rule`` retorna um vetor com todas as funções separadas, ``linha 47``  
-exemplo:  
+Ex.  
 ```
 S -> aA| aB| bB  
 A -> aB|bB  
@@ -181,7 +181,7 @@ Ex. as funções de transição
  ["A" "aB" "bB"]
  ["B" "bB"]]
 ```
-Retornaria
+Retornaria  
 ```clojure
 {:S [{:a "A"} {:a "B"} {:b "B"}]
  :A [{:a "B"} {:b "B"}]
@@ -189,7 +189,7 @@ Retornaria
 ```
 
 A função ``read-automaton-data`` cria um ``map`` com os de entrada do simulador 
-ido do teclado.
+ido do teclado. ``linha 76``  
 ```clojure
 (defn read-automaton-data
   []
@@ -203,7 +203,7 @@ ido do teclado.
 
 A função ``identifier-chain`` é responsável por percorrer o grafo gerado 
 pela função ``create-afnd`` identificando os caracteres da string, caso 
-chegue no final da string em um estado final, a string é aceita.  
+chegue no final da string em um estado final, a string é aceita. ``linha 89``  
 ```clojure
 (defn identifier-chain
   [chain afnd state final-states]
@@ -220,7 +220,7 @@ chegue no final da string em um estado final, a string é aceita.
 
 A função ``main`` chama as funções de leitura dos dados, criação do automato 
 e chama função ``identifier-chain`` para iniciar o processo de identificação 
-dos caracteres.  
+dos caracteres. ``linha 101``  
 ```clojure
 (defn main
   []
