@@ -156,3 +156,91 @@ Retornaria
             (recur (conj rules real-rule))))
         rules))))
 ```
+
+A função ``mount-part-afnd``, recebe cada função de transição separado 
+e tranforma em um ``map`` com o label sendo um keyword e o estado 
+corespondente o seu valor. ``linha 63``  
+Ex. função de transição ``aA`` retornaria  
+```
+{:a "A"}
+```
+```clojure
+(defn mount-part-afnd
+  [rule]
+  (let [state (first rule)
+        fn-transictions (mapv define-function-transition (rest rule))]
+    {(keyword state) fn-transictions}))
+```
+
+A função ``create-afnd`` é responsável por criar um grafo a partir do vetor das  
+funções de transição usando um ``map``, com o estado sendo um nó do grafo 
+e a função de transição sendo os destinos. ``linha 69``  
+Ex. as funções de transição  
+```
+[["S" "aA" "aB" "bB"]
+ ["A" "aB" "bB"]
+ ["B" "bB"]]
+```
+Retornaria
+```clojure
+{:S [{:a "A"} {:a "B"} {:b "B"}]
+ :A [{:a "B"} {:b "B"}]
+ :B [{:b "B"}]}
+```
+
+A função ``read-automaton-data`` cria um ``map`` com os de entrada do simulador 
+ido do teclado.
+```clojure
+(defn read-automaton-data
+  []
+  {:alphabet (read-alphabet)
+   :states (read-states)
+   :initial-state (read-initial-state)
+   :final-states (read-final-states)
+   :rules-grammar (read-rules-grammar [])
+   :string (read-string-chain)})
+```
+
+A função ``identifier-chain`` é responsável por percorrer o grafo gerado 
+pela função ``create-afnd`` identificando os caracteres da string, caso 
+chegue no final da string em um estado final, a string é aceita.  
+```clojure
+(defn identifier-chain
+  [chain afnd state final-states]
+  (let [label (keyword (first chain))
+        fn-transactions (state afnd)
+        states (filterv #(not (nil? %)) (map #(keyword (label %)) fn-transactions))]
+    (if (empty? states)
+      false
+      (mapv (fn [state]
+	            (if (and (empty? (rest chain)) (.contains final-states state)) 
+	              (presents-recognition)
+	              (identifier-chain (rest chain) afnd state final-states))) states))))
+```
+
+A função ``main`` chama as funções de leitura dos dados, criação do automato 
+e chama função ``identifier-chain`` para iniciar o processo de identificação 
+dos caracteres.  
+```clojure
+(defn main
+  []
+  (let [automaton-data (read-automaton-data)
+        afnd (create-afnd {} (:rules-grammar automaton-data))
+        string (:string automaton-data)
+        initial-state (:initial-state automaton-data)
+        final-states (:final-states automaton-data)]
+        (identifier-chain string afnd initial-state final-states)))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
