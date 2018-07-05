@@ -211,8 +211,7 @@ estados destinos a apartir do estado atual pelo label atual, verifica se tem alg
 caminho de destino, caso tenha, verifica se é o fim da string e se está em um estado 
 final, caso isso ocorra, mostra a mesnsagem de "String aceira", senão faz o mesmo 
 precesso recursivamente percorrendo o grafo até o fim da string, se a string não for 
-aceita, não retorna nada
-da strings
+aceita, não retorna nada.
 ```clojure
 (defn identifier-chain
   [chain afnd state final-states]
