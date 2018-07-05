@@ -13,28 +13,28 @@
 
 (defn read-alphabet
   []
-  (println "Digite o alfabeto")
+  (println "Digite o alfabeto (a b)")
   (let [alphabet (read-data-afnd)]
     alphabet))
 
 (defn read-states
   []
-  (println "Digite os estados do autômato")
+  (println "Digite os estados do autômato (Ex. S A B")
   (read-data-afnd))
 
 (defn read-initial-state
   []
-  (println "Digite o estado inicial")
+  (println "Digite o estado inicial (Ex. S)")
   (keyword (first (read-data-afnd))))
 
 (defn read-final-states
   []
-  (println "Digite os estados finais")
+  (println "Digite os estados finais (Ex. B)")
   (mapv #(keyword %) (read-data-afnd)))
 
 (defn read-string-chain
   []
-  (println "Digite a string")
+  (println "Digite a string (Ex. aabbb)")
   (let [chain (read-line)]
     (s/split chain #"")))
 
@@ -46,7 +46,7 @@
 
 (defn read-rules-grammar
   [rules]
-  (println "Digite as funções de transição")
+  (println "Digite as funções de transição (Ex. S -> aA bB ou S->aA|bB")
   (loop [rules rules]
     (let [rule (read-line)]
       (if-not (empty? rule)
@@ -82,31 +82,21 @@
    :rules-grammar (read-rules-grammar [])
    :string (read-string-chain)})
 
-(defn recognized?
-  [result]
-  (let [r (first result)]
-    (if (true? r)
-      r
-      (if (vector? r)
-        (recur r)))))
-
+(defn presents-recognition
+  []
+  (println "\nString aceita!"))
 
 (defn identifier-chain
   [chain afnd state final-states]
-  (let [label (first chain)
+  (let [label (keyword (first chain))
         fn-transactions (state afnd)
-        states (filterv #(not (nil? %)) (map #(-> ((keyword label) %)
-                                                  keyword) fn-transactions))]
+        states (filterv #(not (nil? %)) (map #(keyword (label %)) fn-transactions))]
     (if (empty? states)
       false
       (mapv (fn [state]
-            (if (and (empty? (rest chain)) (.contains final-states state))
-              ;(println "\n\nString reconhecida")
-              true
-              (identifier-chain (rest chain) afnd state final-states))) states))))
-
-;   {:S [{:a A} {:a B} {:b B}], :A [{:a A} {:b B}], :B [{:a B}]}
-;  (identifier-chain ["a" "a" "b" "b" "b"] {:S [{:a "A"}, {:a "B"} {:b "B"}], :A [{:a "A"}, {:b "B"}], :B [{:b "B"}]} :S)
+	            (if (and (empty? (rest chain)) (.contains final-states state)) 
+	              (presents-recognition)
+	              (identifier-chain (rest chain) afnd state final-states))) states))))
 
 (defn main
   []
@@ -114,6 +104,5 @@
         afnd (create-afnd {} (:rules-grammar automaton-data))
         string (:string automaton-data)
         initial-state (:initial-state automaton-data)
-        final-states (:final-states automaton-data)
-        res (recognized? (identifier-chain string afnd initial-state final-states))]
-    (println res)))
+        final-states (:final-states automaton-data)]
+        (identifier-chain string afnd initial-state final-states)))
