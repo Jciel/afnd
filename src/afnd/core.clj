@@ -13,28 +13,28 @@
 
 (defn read-alphabet
   []
-  (println "Digite o alfabeto (a b)")
+  (println "\nDigite o alfabeto (a b)")
   (let [alphabet (read-data-afnd)]
     alphabet))
 
 (defn read-states
   []
-  (println "Digite os estados do autômato (Ex. S A B")
+  (println "\nDigite os estados do autômato (Ex. S A B)")
   (read-data-afnd))
 
 (defn read-initial-state
   []
-  (println "Digite o estado inicial (Ex. S)")
+  (println "\nDigite o estado inicial (Ex. S)")
   (keyword (first (read-data-afnd))))
 
 (defn read-final-states
   []
-  (println "Digite os estados finais (Ex. B)")
+  (println "\nDigite os estados finais (Ex. B)")
   (mapv #(keyword %) (read-data-afnd)))
 
 (defn read-string-chain
   []
-  (println "Digite a string (Ex. aabbb)")
+  (println "\nDigite a string (Ex. aabbb)")
   (let [chain (read-line)]
     (s/split chain #"")))
 
@@ -46,7 +46,7 @@
 
 (defn read-rules-grammar
   [rules]
-  (println "Digite as funções de transição (Ex. S -> aA bB ou S->aA|bB")
+  (println "\nDigite as funções de transição (Ex. S -> aA bB ou S->aA|bB")
   (loop [rules rules]
     (let [rule (read-line)]
       (if-not (empty? rule)

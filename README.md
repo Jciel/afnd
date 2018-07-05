@@ -139,7 +139,7 @@ A -> aB|bB
 B -> bB  
 ```
 Retornaria  
-```
+```clojure
 [["S" "aA" "aB" "bB"]
  ["A" "aB" "bB"]
  ["B" "bB"]]
@@ -161,7 +161,7 @@ A função ``mount-part-afnd``, recebe cada função de transição separado
 e tranforma em um ``map`` com o label sendo um keyword e o estado 
 corespondente o seu valor. ``linha 63``  
 Ex. função de transição ``aA`` retornaria  
-```
+```clojure
 {:a "A"}
 ```
 ```clojure
@@ -176,7 +176,7 @@ A função ``create-afnd`` é responsável por criar um grafo a partir do vetor 
 funções de transição usando um ``map``, com o estado sendo um nó do grafo 
 e a função de transição sendo os destinos. ``linha 69``  
 Ex. as funções de transição  
-```
+```clojure
 [["S" "aA" "aB" "bB"]
  ["A" "aB" "bB"]
  ["B" "bB"]]
@@ -189,7 +189,7 @@ Retornaria
 ```
 
 A função ``read-automaton-data`` cria um ``map`` com os de entrada do simulador 
-ido do teclado. ``linha 76``  
+recebido do teclado. ``linha 76``  
 ```clojure
 (defn read-automaton-data
   []
@@ -203,7 +203,16 @@ ido do teclado. ``linha 76``
 
 A função ``identifier-chain`` é responsável por percorrer o grafo gerado 
 pela função ``create-afnd`` identificando os caracteres da string, caso 
-chegue no final da string em um estado final, a string é aceita. ``linha 89``  
+chegue no final da string em um estado final, a string é aceita, se a string não 
+for aceita não retorna nada. ``linha 89``  
+Primeiramente recupera o primeiro caracter da string e tranforma em um keyword, 
+depois recupera os estados destinos a partir do estado atual, e após recupera os 
+estados destinos a apartir do estado atual pelo label atual, verifica se tem algum 
+caminho de destino, caso tenha, verifica se é o fim da string e se esta em um estado 
+final, caso isso ocorra, mostra a mesnsagem de "String aceira", senão faz o mesmo 
+precesso recursivamente percorrendo o grafo até o fim da string, se a string não for 
+aceita, não retorna nada
+da strings
 ```clojure
 (defn identifier-chain
   [chain afnd state final-states]
